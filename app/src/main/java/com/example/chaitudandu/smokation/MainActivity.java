@@ -8,8 +8,16 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
+import android.widget.Toast;
+
+import com.parse.Parse;
+import com.parse.ParseObject;
+
+import Utils.APIKeys;
 
 public class MainActivity extends AppCompatActivity {
+    ParseObject testObject;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -18,12 +26,17 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-       FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        Parse.enableLocalDatastore(this);
+        Parse.initialize(this, APIKeys.Application_ID, APIKeys.Client_Key);
+        testObject = new ParseObject("TestObject");
+
+        Button test = (Button) findViewById(R.id.button1);
+        test.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+            public void onClick(View v) {
+                testObject.put("foo", "bar");
+                testObject.saveInBackground();
+                Toast.makeText(getApplicationContext(),"Hello",Toast.LENGTH_LONG).show();
             }
         });
     }
