@@ -34,9 +34,9 @@ public class MainActivity extends AppCompatActivity {
         test.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                testObject.put("foo", "bar");
+                testObject.put("foo", "sd");
                 testObject.saveInBackground();
-                Toast.makeText(getApplicationContext(),"Hello",Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(),"ad",Toast.LENGTH_LONG).show();
             }
         });
     }
