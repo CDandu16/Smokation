@@ -21,8 +21,11 @@
         android:text="Test" />
 
     <Button
+        android:id = "@+id/openMap"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Open Map"
-        android:onClick="openMap" />
+        android:onClick="openMap"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true" />
 </RelativeLayout>
