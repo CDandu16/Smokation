@@ -17,17 +17,21 @@ import com.parse.Parse;
 import com.parse.ParseObject;
 
 import Utils.APIKeys;
+
 import android.content.Intent;
 import android.util.Log;
+
 import im.delight.android.location.SimpleLocation;
 
-class MainActivity extends AppCompatActivity
-{
+public class MainActivity extends AppCompatActivity {
     public ParseObject smokerLocation;
     public SimpleLocation location;
 
     //open map
-    /** Called when the user clicks the map button */
+
+    /**
+     * Called when the user clicks the map button
+     */
     public void openMap(View view) {
         // Do something in response to button
         Intent intent = new Intent(this, MapsActivity.class);
@@ -35,12 +39,11 @@ class MainActivity extends AppCompatActivity
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         //Sets views for Android
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         //gps from Simple_Location Jar
@@ -55,17 +58,17 @@ class MainActivity extends AppCompatActivity
         Parse.initialize(this, APIKeys.Application_ID, APIKeys.Client_Key);
         smokerLocation = new ParseObject("smokerLocation");
 
-        Button test = (Button)findViewById(R.id.button1);
-        test.setOnClickListener(new View.OnClickListener(){
+        Button test = (Button) findViewById(R.id.button1);
+        test.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v){
+            public void onClick(View v) {
                 smokerLocation.put("latitude", location.getLatitude());
                 smokerLocation.put("longitude", location.getLongitude());
                 smokerLocation.saveInBackground();
                 //says if user submits position of course we should change it to when it actually uploads
                 Toast.makeText(getApplicationContext(), "Spot Submitted", Toast.LENGTH_LONG).show();
                 //output position to console
-                Log.i("hello","lat" + location.getLatitude() + "long" + location.getLongitude());
+                Log.i("hello", "lat" + location.getLatitude() + "long" + location.getLongitude());
                 //Starts listening service
             }
         });
@@ -75,15 +78,14 @@ class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu)
-    {
+    public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item){
+    public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
