@@ -22,6 +22,9 @@ import im.delight.android.location.SimpleLocation;
 
 class MainActivity extends AppCompatActivity
 {
+    public ParseObject smokerLocation;
+    public SimpleLocation location;
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -32,7 +35,7 @@ class MainActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
 
         //gps from Simple_Location Jar
-        SimpleLocation location = new SimpleLocation(this);
+        location = new SimpleLocation(this);
         if (!location.hasLocationEnabled()) {
             // ask the user to enable location access
             SimpleLocation.openSettings(this);
@@ -41,19 +44,19 @@ class MainActivity extends AppCompatActivity
         //Parse initialization
         Parse.enableLocalDatastore(this);
         Parse.initialize(this, APIKeys.Application_ID, APIKeys.Client_Key);
-        ParseObject smokerLocation = new ParseObject("smokerLocation");
+        smokerLocation = new ParseObject("smokerLocation");
 
         Button test = (Button)findViewById(R.id.button1);
         test.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
-                smokerLocation.put("latitude", location.latitude);
-                smokerLocation.put("longitude", location.longitude);
-                smokerLocation.saveInBackground()
+                smokerLocation.put("latitude", location.getLatitude());
+                smokerLocation.put("longitude", location.getLongitude());
+                smokerLocation.saveInBackground();
                 //says if user submits position of course we should change it to when it actually uploads
-                Toast.makeText(getApplicationContext(), "Spot Submitted", Toast.LENGTH_LONG).show()
+                Toast.makeText(getApplicationContext(), "Spot Submitted", Toast.LENGTH_LONG).show();
                 //output position to console
-                Log.i("hello","lat" + location.getLatitude() + "long" + location.longitude);
+                Log.i("hello","lat" + location.getLatitude() + "long" + location.getLongitude());
                 //Starts listening service
             }
         });
