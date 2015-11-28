@@ -15,6 +15,7 @@ import com.parse.Parse
 import com.parse.ParseObject
 
 import Utils.APIKeys
+import android.content.Intent
 import android.util.Log
 import im.delight.android.location.SimpleLocation
 
@@ -28,7 +29,7 @@ class MainActivity : AppCompatActivity() {
         val toolbar = findViewById(R.id.toolbar) as Toolbar
         setSupportActionBar(toolbar)
 
-        //GPS from Simple_Location Jar
+        //gps from Simple_Location Jar
         var location: SimpleLocation = SimpleLocation(this)
         if (!location.hasLocationEnabled()) {
             // ask the user to enable location access
@@ -46,10 +47,14 @@ class MainActivity : AppCompatActivity() {
             smokerLocation.put("longitude", location.longitude);
             smokerLocation.saveInBackground()
             //says if user submits position of course we should change it to when it actually uploads
-            Toast.makeText(applicationContext, "Spot Submitted", Toast.LENGTH_LONG).show()
+            //Toast.makeText(applicationContext, "Spot Submitted", Toast.LENGTH_LONG).show()
             //output position to console
             Log.i("hello","lat" + location.getLatitude() + "long" + location.longitude);
+            //Starts listening service
         }
+        //uncomemnt this line if you want to drain battery
+        startService(Intent(this, javaClass<MyService>()))
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
