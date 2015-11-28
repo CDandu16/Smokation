@@ -10,6 +10,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MenuInflater;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.parse.Parse;
@@ -24,6 +25,14 @@ class MainActivity extends AppCompatActivity
 {
     public ParseObject smokerLocation;
     public SimpleLocation location;
+
+    //open map
+    /** Called when the user clicks the map button */
+    public void openMap(View view) {
+        // Do something in response to button
+        Intent intent = new Intent(this, MapsActivity.class);
+        startActivity(intent);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
