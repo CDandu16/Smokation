@@ -22,6 +22,7 @@ import im.delight.android.location.SimpleLocation
 class MainActivity : AppCompatActivity() {
 
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         //Sets views for Android
         super.onCreate(savedInstanceState)
@@ -47,7 +48,7 @@ class MainActivity : AppCompatActivity() {
             smokerLocation.put("longitude", location.longitude);
             smokerLocation.saveInBackground()
             //says if user submits position of course we should change it to when it actually uploads
-            //Toast.makeText(applicationContext, "Spot Submitted", Toast.LENGTH_LONG).show()
+            Toast.makeText(applicationContext, "Spot Submitted", Toast.LENGTH_LONG).show()
             //output position to console
             Log.i("hello","lat" + location.getLatitude() + "long" + location.longitude);
             //Starts listening service
@@ -56,6 +57,7 @@ class MainActivity : AppCompatActivity() {
         startService(Intent(this, javaClass<MyService>()))
 
     }
+
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.

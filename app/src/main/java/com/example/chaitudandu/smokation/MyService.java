@@ -20,6 +20,7 @@ public class MyService extends Service {
     private LocationManager mLocationManager = null;
     private static final int LOCATION_INTERVAL = 10;//change this for time
     private static final float LOCATION_DISTANCE = 0f;//change this to get it every distance
+    private static final String MY_ACTION = "MY_ACTION";
 
     private class LocationListener implements android.location.LocationListener {
         Location mLastLocation;
@@ -27,6 +28,12 @@ public class MyService extends Service {
         public LocationListener(String provider) {
             Log.e(TAG, "LocationListener " + provider);
             mLastLocation = new Location(provider);
+
+            //send location to mainActivity
+            Intent intent = new Intent();
+            intent.setAction(MY_ACTION);
+            intent.putExtra("Location", mLastLocation);
+            sendBroadcast(intent);
         }
 
         @Override
