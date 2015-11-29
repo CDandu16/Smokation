@@ -18,7 +18,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:text="Test" />
+        android:text="Test"
+        android:layout_below="@+id/remove_geofences_button"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="89dp" />
 
     <Button
         android:layout_width="wrap_content"
@@ -31,4 +34,21 @@
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true" />
         android:onClick="openMap" />
+
+    <Button
+        android:id="@+id/add_geofences_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:onClick="addGeofencesButtonHandler"
+        android:text="@string/add_geofences"
+        android:layout_alignParentEnd="true" />
+
+    <Button
+        android:id="@+id/remove_geofences_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:onClick="removeGeofencesButtonHandler"
+        android:text="@string/remove_geofences" />
 </RelativeLayout>
