@@ -2,6 +2,8 @@ package com.example.chaitudandu.smokation;
 
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.util.Log;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.*;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -10,10 +12,17 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.parse.FindCallback;
+import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
+
+import java.util.List;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
+    private List<ParseObject> smokerLocations;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,10 +30,34 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         setContentView(R.layout.activity_maps);
         mMap = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
 
+        //Retrieve lat long from Parse
+
+        ParseQuery<ParseObject> latLongquery = new ParseQuery<ParseObject>("smokerLocation");
+        latLongquery.findInBackground(new FindCallback<ParseObject>() {
+            @Override
+            public void done(List<ParseObject> objects, ParseException e) {
+                if (e == null) {
+                    Log.i("score", "Retrieved " + objects.size() + " scores");
+                    smokerLocations = objects;
+                    //goes through the list of parse objects containing lat and long
+                    for(int i=0;i<smokerLocations.size();i++){
+                        //draws spots to map
+                        LatLng marker = new LatLng(smokerLocations.get(i).getDouble("latitude"),smokerLocations.get(i).getDouble("longitude"));
+                        mMap.addMarker(new MarkerOptions().position(marker).title("Marker in Sydney"));
+                    }
+                } else {
+                    Log.i("score", "Error: " + e.getMessage());
+                    Toast.makeText(MapsActivity.this, "Error retrieving", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        Log.i("score","works here");
+
+
+
         // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng(-34, 151);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+
     }
 
 /////////Don't write anyting in there write everything in OnCreate
