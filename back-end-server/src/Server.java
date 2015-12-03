@@ -53,11 +53,22 @@ public class Server implements HttpHandler
 		System.out.println("Get Smokations");
 		
 		String response = "Here's all of my Smokations\n";
-		exchange.sendResponseHeaders(200, response.length());
+		
+		//serialize smokations
+		byte[] serialized = serialize(smokations);
+		
+		exchange.sendResponseHeaders(200, serialized.length);
 		OutputStream os = exchange.getResponseBody();
-		os.write(response.getBytes());
+		os.write(serialized);
 		os.close();
 	}
+	
+	public static byte[] serialize(Object obj) throws IOException {
+        ByteArrayOutputStream b = new ByteArrayOutputStream();
+        ObjectOutputStream o = new ObjectOutputStream(b);
+        o.writeObject(obj);
+        return b.toByteArray();
+    }
 
 	//a request to add a point
 	public void handleAddRequest(HttpExchange exchange, Headers requestHeaders) throws IOException
