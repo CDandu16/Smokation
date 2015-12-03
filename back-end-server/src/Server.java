@@ -1,11 +1,9 @@
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.InetSocketAddress;
+import java.util.ArrayList;
+import java.util.List;
 
-import com.sun.net.httpserver.Headers;
-import com.sun.net.httpserver.HttpExchange;
-import com.sun.net.httpserver.HttpHandler;
-import com.sun.net.httpserver.HttpServer;
+import com.sun.net.httpserver.*;
 
 /**
  * @author Cole Hudson
@@ -13,48 +11,80 @@ import com.sun.net.httpserver.HttpServer;
 
 public class Server implements HttpHandler
 {
+	//points in the form (lat, long)
+	public ArrayList<Double[]> smokations;
+	
+	Server()
+	{
+		smokations = new ArrayList<Double[]>();
+	}
+	
 	public static void main(String[] args) throws Exception 
 	{
-        HttpServer server = HttpServer.create(new InetSocketAddress(8000), 0);
-        server.createContext("/", new Server());
-        server.setExecutor(null); // creates a default executor
-        server.start();
-    }
+		HttpServer server = HttpServer.create(new InetSocketAddress(8000), 0);
+		
+		server.createContext("/", new Server());
+		server.setExecutor(null); // creates a default executor
+		server.start();
+	}
 
-    public void handle(HttpExchange t) throws IOException 
+	public void handle(HttpExchange exchange) throws IOException 
 	{
-    	//request info
-    	Headers requestHeaders = t.getRequestHeaders();
-    	
-    	boolean getSmokations = requestHeaders.get("RequestType").get(0).equals("getSmokations");
-    	boolean addSmokation = requestHeaders.get("RequestType").get(0).equals("addSmokation");
-    	
-    	if(getSmokations)
-    	{
-    		System.out.println("Get Smokations");
-    	}
-    	
-    	if(addSmokation)
-    	{
-    		System.out.println("Add Smokations");
-    	}
-    	
-        String response = "Smokation\n";
-        t.sendResponseHeaders(200, response.length());
-        OutputStream os = t.getResponseBody();
-        os.write(response.getBytes());
-        os.close();
-    }
-    
-    //a request to add a point
-    public void handleAddRequest()
-    {
-    	
-    }
-    
-    //handle a request to get all points
-    public void handleGetPointsRequest()
-    {
-    	
-    }
+		//request info
+		Headers requestHeaders = exchange.getRequestHeaders();
+
+		boolean getSmokations = requestHeaders.get("RequestType").get(0).equals("getSmokations");
+		boolean addSmokation = requestHeaders.get("RequestType").get(0).equals("addSmokation");
+
+		if(getSmokations)
+		{
+			handleGetSmokationsRequest(exchange);
+		}
+
+		if(addSmokation)
+		{
+			handleAddRequest(exchange, requestHeaders);
+		}
+	}
+
+	//handle a request to get all points
+	public void handleGetSmokationsRequest(HttpExchange exchange) throws IOException
+	{
+		System.out.println("Get Smokations");
+		
+		String response = "Here's all of my Smokations\n";
+		exchange.sendResponseHeaders(200, response.length());
+		OutputStream os = exchange.getResponseBody();
+		os.write(response.getBytes());
+		os.close();
+	}
+
+	//a request to add a point
+	public void handleAddRequest(HttpExchange exchange, Headers requestHeaders) throws IOException
+	{
+		System.out.println("Add Smokations");
+		
+		List<String> latitudes = requestHeaders.get("Latitude");
+		List<String> longitudes = requestHeaders.get("Longitude");
+		
+		//add all of the latitudes and longitudes to the smokations array
+		if(latitudes.size() == longitudes.size())
+		{
+			for(int i = 0; i < latitudes.size(); i++)
+			{
+				Double latitude = Double.parseDouble(latitudes.get(i));
+				Double longitude = Double.parseDouble(longitudes.get(i));
+				Double[] smokation = {latitude, longitude};
+				
+				smokations.add(smokation);
+			}
+		}
+		
+		
+		String response = "Thank you for that new Smokation\n";
+		exchange.sendResponseHeaders(200, response.length());
+		OutputStream os = exchange.getResponseBody();
+		os.write(response.getBytes());
+		os.close();
+	}
 }
