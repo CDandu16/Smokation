@@ -14,6 +14,16 @@ public class Server implements HttpHandler
 	//points in the form (lat, long)
 	public ArrayList<Double[]> smokations;
 	
+	public void printSmokations()
+	{
+		System.out.println("Smokations!!!");
+		for(Double[] smokation : smokations)
+		{
+			System.out.println("Lat : " + smokation[0] + ", Long: " + smokation[1]);
+		}
+		System.out.println();
+	}
+	
 	Server()
 	{
 		smokations = new ArrayList<Double[]>();
@@ -61,6 +71,8 @@ public class Server implements HttpHandler
 		OutputStream os = exchange.getResponseBody();
 		os.write(serialized);
 		os.close();
+		
+		printSmokations();
 	}
 	
 	public static byte[] serialize(Object obj) throws IOException {
@@ -97,5 +109,7 @@ public class Server implements HttpHandler
 		OutputStream os = exchange.getResponseBody();
 		os.write(response.getBytes());
 		os.close();
+		
+		printSmokations();
 	}
 }
