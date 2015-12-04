@@ -77,10 +77,6 @@ public class Server implements HttpHandler
 		os.write(serialized);
 		os.close();
 		
-		//test
-		ArrayList<Double[]> unserialized = (ArrayList<Double[]>)deserialize(serialized);
-		System.out.println("First Lat value: " + unserialized.get(0)[0]);
-		
 		printSmokations();
 	}
 	
