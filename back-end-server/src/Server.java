@@ -48,7 +48,12 @@ public class Server implements HttpHandler
 
 		if(getSmokations)
 		{
-			handleGetSmokationsRequest(exchange);
+			try {
+				handleGetSmokationsRequest(exchange);
+			} catch (ClassNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 
 		if(addSmokation)
@@ -58,7 +63,7 @@ public class Server implements HttpHandler
 	}
 
 	//handle a request to get all points
-	public void handleGetSmokationsRequest(HttpExchange exchange) throws IOException
+	public void handleGetSmokationsRequest(HttpExchange exchange) throws IOException, ClassNotFoundException
 	{
 		System.out.println("Get Smokations");
 		
@@ -72,6 +77,10 @@ public class Server implements HttpHandler
 		os.write(serialized);
 		os.close();
 		
+		//test
+		ArrayList<Double[]> unserialized = (ArrayList<Double[]>)deserialize(serialized);
+		System.out.println("First Lat value: " + unserialized.get(0)[0]);
+		
 		printSmokations();
 	}
 	
@@ -80,6 +89,12 @@ public class Server implements HttpHandler
         ObjectOutputStream o = new ObjectOutputStream(b);
         o.writeObject(obj);
         return b.toByteArray();
+    }
+	
+	public static Object deserialize(byte[] bytes) throws IOException, ClassNotFoundException {
+        ByteArrayInputStream b = new ByteArrayInputStream(bytes);
+        ObjectInputStream o = new ObjectInputStream(b);
+        return o.readObject();
     }
 
 	//a request to add a point
