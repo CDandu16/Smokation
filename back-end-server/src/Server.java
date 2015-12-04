@@ -12,21 +12,21 @@ import com.sun.net.httpserver.*;
 public class Server implements HttpHandler
 {
 	//points in the form (lat, long)
-	public ArrayList<Double[]> smokations;
+	public ArrayList<Smokation> smokations;
 	
 	public void printSmokations()
 	{
 		System.out.println("Smokations!!!");
-		for(Double[] smokation : smokations)
+		for(Smokation smokation : smokations)
 		{
-			System.out.println("Lat : " + smokation[0] + ", Long: " + smokation[1]);
+			System.out.println("Lat : " + smokation.getLatitude() + ", Long: " + smokation.getLongitude());
 		}
 		System.out.println();
 	}
 	
 	Server()
 	{
-		smokations = new ArrayList<Double[]>();
+		smokations = new ArrayList<Smokation>();
 	}
 	
 	public static void main(String[] args) throws Exception 
@@ -69,23 +69,27 @@ public class Server implements HttpHandler
 		
 		String response = "Here's all of my Smokations\n";
 		
-		//serialize smokations
-		byte[] serialized = serialize(smokations);
+		//serialize smokations and sends it to client
+
+		ByteArrayOutputStream b = new ByteArrayOutputStream();
+		ObjectOutputStream o = new ObjectOutputStream(b);
+		o.writeObject(smokations);
+		o.close();
+		printSmokations();
 		
+		/* byte[] serialized = serialize(smokations);
 		exchange.sendResponseHeaders(200, serialized.length);
 		OutputStream os = exchange.getResponseBody();
-		os.write(serialized);
-		os.close();
+		os.write(serialized);*/
 		
-		printSmokations();
 	}
 	
-	public static byte[] serialize(Object obj) throws IOException {
+	/*public static byte[] serialize(Object obj) throws IOException {
         ByteArrayOutputStream b = new ByteArrayOutputStream();
         ObjectOutputStream o = new ObjectOutputStream(b);
         o.writeObject(obj);
         return b.toByteArray();
-    }
+    }*/
 	
 	public static Object deserialize(byte[] bytes) throws IOException, ClassNotFoundException {
         ByteArrayInputStream b = new ByteArrayInputStream(bytes);
@@ -108,7 +112,7 @@ public class Server implements HttpHandler
 			{
 				Double latitude = Double.parseDouble(latitudes.get(i));
 				Double longitude = Double.parseDouble(longitudes.get(i));
-				Double[] smokation = {latitude, longitude};
+				Smokation smokation = new Smokation(latitude,longitude);
 				
 				smokations.add(smokation);
 			}

@@ -4,7 +4,6 @@ import java.net.*;
 import java.util.ArrayList;
 
 public class TestConnection {
-	private static final long serialVersionUID = 	8664875232659988799L;
 
 	public static void main(String [] args) throws ClassNotFoundException{
 		try {
@@ -15,7 +14,7 @@ public class TestConnection {
 			BufferedReader in = new BufferedReader(new InputStreamReader(
 					connection.getInputStream()));
 			String inputLine;
-			ArrayList<Double[]> returned = (ArrayList<Double[]>)(deserialize(in.readLine().getBytes()));
+			ArrayList<Smokation> returned = (ArrayList<Smokation>)(deserialize(in.readLine().getBytes()));
 			System.out.println(returned.toString());
 				//System.out.println(inputLine);
 			in.close();
@@ -25,6 +24,7 @@ public class TestConnection {
 		}catch(IOException e){
 			e.printStackTrace();
 		}
+		
 	}
 	
 	public static Object deserialize(byte[] string) throws IOException, ClassNotFoundException {
