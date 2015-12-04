@@ -99,9 +99,7 @@ public class Server implements HttpHandler
 
 	//a request to add a point
 	public void handleAddRequest(HttpExchange exchange, Headers requestHeaders) throws IOException
-	{
-		System.out.println("Add Smokations");
-		
+	{		
 		List<String> latitudes = requestHeaders.get("Latitude");
 		List<String> longitudes = requestHeaders.get("Longitude");
 		
@@ -120,11 +118,15 @@ public class Server implements HttpHandler
 		
 		
 		String response = "Thank you for that new Smokation\n";
-		exchange.sendResponseHeaders(200, response.length());
+		/*exchange.sendResponseHeaders(200, response.length());
 		OutputStream os = exchange.getResponseBody();
 		os.write(response.getBytes());
-		os.close();
+		os.close();*/
 		
-		printSmokations();
+		ByteArrayOutputStream b = new ByteArrayOutputStream();
+		ObjectOutputStream o = new ObjectOutputStream(b);
+		o.writeObject(response);
+		o.close();
+		//printSmokations();
 	}
 }
