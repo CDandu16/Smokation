@@ -24,4 +24,9 @@ public class Smokation implements Serializable{
 		Longitude = longitude;
 	}
 
+	@Override
+	public String toString() {
+		return "Smokation [Latitude=" + Latitude + ", Longitude=" + Longitude + "]";
+	}
+
 }

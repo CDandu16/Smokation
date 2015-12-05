@@ -49,6 +49,7 @@ public class Server implements HttpHandler
 		if(getSmokations)
 		{
 			try {
+				exchange.sendResponseHeaders(200, 0);
 				handleGetSmokationsRequest(exchange);
 			} catch (ClassNotFoundException e) {
 				// TODO Auto-generated catch block
@@ -68,28 +69,20 @@ public class Server implements HttpHandler
 		System.out.println("Get Smokations");
 		
 		String response = "Here's all of my Smokations\n";
-		
 		//serialize smokations and sends it to client
-
-		ByteArrayOutputStream b = new ByteArrayOutputStream();
-		ObjectOutputStream o = new ObjectOutputStream(b);
-		o.writeObject(smokations);
+		ObjectOutputStream o = new ObjectOutputStream(exchange.getResponseBody());
+		//sends size of arraylist being sent
+		o.writeInt(smokations.size());
+		//starts "new line"
+		o.reset();
+		for(int i=0;i<smokations.size();i++){
+			//write arraylist object by object
+			o.writeObject(smokations.get(i));
+			o.reset();
+		}
 		o.close();
 		printSmokations();
-		
-		/* byte[] serialized = serialize(smokations);
-		exchange.sendResponseHeaders(200, serialized.length);
-		OutputStream os = exchange.getResponseBody();
-		os.write(serialized);*/
-		
 	}
-	
-	/*public static byte[] serialize(Object obj) throws IOException {
-        ByteArrayOutputStream b = new ByteArrayOutputStream();
-        ObjectOutputStream o = new ObjectOutputStream(b);
-        o.writeObject(obj);
-        return b.toByteArray();
-    }*/
 	
 	public static Object deserialize(byte[] bytes) throws IOException, ClassNotFoundException {
         ByteArrayInputStream b = new ByteArrayInputStream(bytes);
