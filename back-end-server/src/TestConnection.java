@@ -8,17 +8,18 @@ public class TestConnection {
 
 	public static void main(String [] args) throws ClassNotFoundException{
 		try {
-			URL url = new URL("http://127.0.0.1:8000/");
+			URL url = new URL("http://localhost:8000/");
 			HttpURLConnection connection = (HttpURLConnection)url.openConnection();
 			connection.setRequestProperty("RequestType", "getSmokations");
 			connection.connect();
+			
+			
 			BufferedReader in = new BufferedReader(new InputStreamReader(
 					connection.getInputStream()));
 			String inputLine;
-			ArrayList<Double[]> returned = (ArrayList<Double[]>)(deserialize(in.readLine().getBytes()));
-			System.out.println(returned.toString());
-				//System.out.println(inputLine);
 			in.close();
+			
+			ArrayList<Double[]> returned = (ArrayList<Double[]>)(deserialize(in.readLine().getBytes()));
 			
 		}catch(MalformedURLException e){
 			e.printStackTrace();
