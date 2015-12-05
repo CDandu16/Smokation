@@ -14,14 +14,8 @@ public class AddSmokation {
 			connection.addRequestProperty("Latitude", "2");
 			connection.addRequestProperty("Longitude", "3200");
 			connection.connect();
-			BufferedReader in = new BufferedReader(new InputStreamReader(
-					connection.getInputStream()));
-			String inputLine;
-			inputLine = in.readLine();
-			System.out.println(inputLine);
-			System.out.println("hello");
-				//System.out.println(inputLine);
-			in.close();
+			ObjectInputStream input = new ObjectInputStream(connection.getInputStream());
+			System.out.println(input.readUTF());
 		}catch(MalformedURLException e){
 			e.printStackTrace();
 		}catch(IOException e){

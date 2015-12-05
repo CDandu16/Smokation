@@ -59,6 +59,7 @@ public class Server implements HttpHandler
 
 		if(addSmokation)
 		{
+			exchange.sendResponseHeaders(200, 0);
 			handleAddRequest(exchange, requestHeaders);
 		}
 	}
@@ -111,15 +112,9 @@ public class Server implements HttpHandler
 		
 		
 		String response = "Thank you for that new Smokation\n";
-		/*exchange.sendResponseHeaders(200, response.length());
-		OutputStream os = exchange.getResponseBody();
-		os.write(response.getBytes());
-		os.close();*/
-		
-		ByteArrayOutputStream b = new ByteArrayOutputStream();
-		ObjectOutputStream o = new ObjectOutputStream(b);
-		o.writeObject(response);
+		ObjectOutputStream o = new ObjectOutputStream(exchange.getResponseBody());
+		//sends size of arraylist being sent
+		o.writeUTF(response);
 		o.close();
-		//printSmokations();
 	}
 }
