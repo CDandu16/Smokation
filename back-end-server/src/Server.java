@@ -41,10 +41,21 @@ public class Server implements HttpHandler
 	Server()
 	{
 		smokations = new ArrayList<Smokation>();
-		/*
+		
 		mongoClient  = new MongoClient();
 		db = mongoClient.getDatabase("test");
-		*/
+	    
+	}
+	
+	public void mongoTest()
+	{
+		db.getCollection("smokations").insertOne(new Document().append("latitude", 666).append("longitude", 666));
+		FindIterable<Document> iterable = db.getCollection("smokations").find();
+		iterable.forEach(new Block<Document>() {
+			public void apply(final Document document) {
+				System.out.println(document);
+			}
+		});
 	}
 	
 	public void printSmokations()
@@ -139,7 +150,7 @@ public class Server implements HttpHandler
 				smokations.add(smokation);
 			}
 		}
-		
+		mongoTest();
 		
 		String response = "Thank you for that new Smokation\n";
 		ObjectOutputStream o = new ObjectOutputStream(exchange.getResponseBody());

@@ -9,7 +9,7 @@ public class GetSmokations {
 	
 	public static void main(String [] args) throws ClassNotFoundException{
 		try {
-			URL url = new URL("http://localhost:8000/");
+			URL url = new URL("http://45.55.156.205:8000");
 			HttpURLConnection connection = (HttpURLConnection)url.openConnection();
 			connection.setRequestProperty("RequestType", "getSmokations");
 			connection.connect();
