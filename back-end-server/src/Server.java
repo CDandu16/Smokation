@@ -41,19 +41,6 @@ public class Server implements HttpHandler
 		db = mongoClient.getDatabase("test");
 	}
 	
-	public void mongoTest()
-	{
-		db.getCollection("smokations").insertOne(new Document().append("latitude", 666).append("longitude", 666));
-		
-		FindIterable<Document> iterable = db.getCollection("smokations").find();
-		
-		iterable.forEach(new Block<Document>() {
-		    public void apply(final Document document) {
-		        System.out.println(document);
-		    }
-		});
-	}
-	
 	public void printSmokations()
 	{
 		System.out.println("Smokations!!!");
@@ -71,6 +58,8 @@ public class Server implements HttpHandler
 		server.createContext("/", new Server());
 		server.setExecutor(null); // creates a default executor
 		server.start();
+		
+		System.out.println("Smokations Server Running");
 	}
 
 	public void handle(HttpExchange exchange) throws IOException 
