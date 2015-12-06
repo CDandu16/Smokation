@@ -6,7 +6,7 @@ import java.util.List;
 import com.sun.net.httpserver.*;
 
 //mongo
-/*
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
@@ -21,7 +21,7 @@ import static java.util.Arrays.asList;
 
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoDatabase;
-*/
+
 
 /**
  * @author Cole Hudson
@@ -33,10 +33,10 @@ public class Server implements HttpHandler
 	public ArrayList<Smokation> smokations;
 	
 	//mongo
-	/*
+	
 	public MongoClient mongoClient;
 	public MongoDatabase db;
-	*/
+	
 	
 	Server()
 	{
