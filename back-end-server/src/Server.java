@@ -5,6 +5,22 @@ import java.util.List;
 
 import com.sun.net.httpserver.*;
 
+//mongo
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+
+import org.bson.Document;
+
+import com.mongodb.Block;
+import com.mongodb.client.FindIterable;
+
+import static com.mongodb.client.model.Filters.*;
+import static com.mongodb.client.model.Sorts.ascending;
+import static java.util.Arrays.asList;
+
+import com.mongodb.MongoClient;
+import com.mongodb.client.MongoDatabase;
+
 /**
  * @author Cole Hudson
  */
@@ -14,6 +30,30 @@ public class Server implements HttpHandler
 	//points in the form (lat, long)
 	public ArrayList<Smokation> smokations;
 	
+	//mongo
+	public MongoClient mongoClient;
+	public MongoDatabase db;
+	
+	Server()
+	{
+		smokations = new ArrayList<Smokation>();
+		mongoClient  = new MongoClient();
+		db = mongoClient.getDatabase("test");
+	}
+	
+	public void mongoTest()
+	{
+		db.getCollection("smokations").insertOne(new Document().append("latitude", 666).append("longitude", 666));
+		
+		FindIterable<Document> iterable = db.getCollection("smokations").find();
+		
+		iterable.forEach(new Block<Document>() {
+		    public void apply(final Document document) {
+		        System.out.println(document);
+		    }
+		});
+	}
+	
 	public void printSmokations()
 	{
 		System.out.println("Smokations!!!");
@@ -22,11 +62,6 @@ public class Server implements HttpHandler
 			System.out.println("Lat : " + smokation.getLatitude() + ", Long: " + smokation.getLongitude());
 		}
 		System.out.println();
-	}
-	
-	Server()
-	{
-		smokations = new ArrayList<Smokation>();
 	}
 	
 	public static void main(String[] args) throws Exception 
