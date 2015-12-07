@@ -109,9 +109,7 @@ public class Server implements HttpHandler {
 		o.reset();
 		for (int i = 0; i < smokations.size(); i++) {
 			// write arraylist object by object
-			o.writeDouble(smokations.get(i).getLatitude());
-			o.reset();
-			o.writeDouble(smokations.get(i).getLongitude());
+			o.writeObject(smokations.get(i));
 			o.reset();
 		}
 		o.close();

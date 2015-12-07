@@ -15,13 +15,10 @@ public class GetSmokations {
 			connection.setRequestProperty("RequestType", "getSmokations");
 			connection.connect();
 			ObjectInputStream input = new ObjectInputStream(connection.getInputStream());
-			double latitude;
-			double longitude;
+			Smokation smoke;
 			int counter = input.readInt();
 			for (int i = 0; i < counter; i++) {
-				latitude = input.readDouble();
-				longitude = input.readDouble();
-				Smokation smoke = new Smokation(latitude,longitude);
+				smoke = (Smokation) input.readObject();
 				smokers.add(smoke);
 			}
 		} catch (MalformedURLException e) {
