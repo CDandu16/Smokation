@@ -2,17 +2,14 @@ package com.example.chaitudandu.smokation;
 
 import android.app.PendingIntent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MenuInflater;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -26,13 +23,21 @@ import com.google.android.gms.maps.model.LatLng;
 import com.parse.Parse;
 import com.parse.ParseObject;
 
+
 import Utils.APIKeys;
 
 import android.content.Intent;
 import android.util.Log;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
+import com.example.SmokationModel.Smokation;
 
 import im.delight.android.location.SimpleLocation;
 
@@ -90,6 +95,21 @@ public class MainActivity extends AppCompatActivity implements
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        //Some url endpoint that you may have
+        String myUrl = "http://45.55.156.205:8000";
+        //String to place our result in
+        String result;
+        //Instantiate new instance of our class
+        GetSmokationsRequest getRequest = new GetSmokationsRequest();
+        //Perform the doInBackground method, passing in our url
+        try {
+            result = getRequest.execute(myUrl).get();
+            Log.d("hello",result);
+        } catch (InterruptedException e) {
+
+        } catch (ExecutionException e){
+
+        }
         //gps from Simple_Location Jar
         location = new SimpleLocation(this);
         if (!location.hasLocationEnabled()) {
@@ -354,6 +374,47 @@ public class MainActivity extends AppCompatActivity implements
         } else {
             mAddGeofencesButton.setEnabled(true);
             mRemoveGeofencesButton.setEnabled(false);
+        }
+    }
+
+   public class GetSmokationsRequest extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected String doInBackground(String ... params) {
+            String stringUrl = params[0];
+            String result;
+            ArrayList<Smokation> smokers = new ArrayList<Smokation>();
+            try {
+                URL url = new URL("http://45.55.156.205:8000");
+                HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+                connection.setRequestProperty("RequestType", "getSmokations");
+                connection.connect();
+                ObjectInputStream input = new ObjectInputStream(connection.getInputStream());
+                Smokation smoke;
+                Object o;
+                int counter = input.readInt();
+                Log.d("hello","" + counter);
+                for(int i=0;i<counter;i++){
+                    Log.d("hello", "" + i);
+                    o = input.readObject();
+                    Log.d("hello","" + o.toString());
+                    smokers.add((Smokation)o);
+                }
+            }catch(MalformedURLException e){
+                e.printStackTrace();
+            }catch(IOException e){
+                e.printStackTrace();
+            }catch(ClassNotFoundException e){
+                e.printStackTrace();
+            }
+            //prints out smoker locations
+            Log.d("hello",smokers.toString());
+            return smokers.toString();
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
         }
     }
 }
