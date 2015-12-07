@@ -34,18 +34,18 @@ public class Server implements HttpHandler {
 
 	// mongo
 
-	public MongoClient mongoClient;
-	public MongoDatabase db;
+	//public MongoClient mongoClient;
+	//public MongoDatabase db;
 
 	Server() {
 		smokations = new ArrayList<Smokation>();
 
-		mongoClient = new MongoClient();
-		db = mongoClient.getDatabase("test");
+		//mongoClient = new MongoClient();
+		//db = mongoClient.getDatabase("test");
 
 	}
 
-	public void mongoTest() {
+	/*public void mongoTest() {
 		db.getCollection("smokations").insertOne(new Document().append("latitude", 666).append("longitude", 666));
 		FindIterable<Document> iterable = db.getCollection("smokations").find();
 		iterable.forEach(new Block<Document>() {
@@ -53,7 +53,7 @@ public class Server implements HttpHandler {
 				System.out.println(document);
 			}
 		});
-	}
+	}*/
 
 	public void printSmokations() {
 		System.out.println("Smokations!!!");
@@ -137,7 +137,7 @@ public class Server implements HttpHandler {
 				smokations.add(smokation);
 			}
 		}
-		mongoTest();
+		//mongoTest();
 
 		String response = "Thank you for that new Smokation\n";
 		ObjectOutputStream o = new ObjectOutputStream(exchange.getResponseBody());

@@ -2,6 +2,7 @@ import java.awt.List;
 import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
+import com.example.SmokationModel.*;
 
 public class GetSmokations {
 
