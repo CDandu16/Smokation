@@ -15,6 +15,13 @@
 			<artifactId>mongodb-driver</artifactId>
 			<version>3.0.4</version>
 		</dependency>
+		<dependency>
+			<groupId>Smokation</groupId>
+			<artifactId>Smokation-sdk</artifactId>
+			<version>1.0.0</version>
+			<scope>system</scope>
+			<systemPath>${basedir}/libs/Smokation.jar</systemPath>
+		</dependency>
 	</dependencies>
 	<build>
 		<sourceDirectory>src</sourceDirectory>
