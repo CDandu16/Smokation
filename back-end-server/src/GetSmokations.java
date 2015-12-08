@@ -2,7 +2,7 @@ import java.awt.List;
 import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
-import com.example.SmokationModel.*;
+
 
 public class GetSmokations {
 
@@ -18,7 +18,7 @@ public class GetSmokations {
 			Smokation smoke;
 			int counter = input.readInt();
 			for (int i = 0; i < counter; i++) {
-				smoke = (Smokation) input.readObject();
+				smoke = new Smokation(input.readDouble(),input.readDouble());
 				smokers.add(smoke);
 			}
 		} catch (MalformedURLException e) {

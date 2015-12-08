@@ -19,7 +19,7 @@ import com.mongodb.client.FindIterable;
 import static com.mongodb.client.model.Filters.*;
 import static com.mongodb.client.model.Sorts.ascending;
 import static java.util.Arrays.asList;
-import com.example.SmokationModel.*;
+
 
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoDatabase;
@@ -109,7 +109,9 @@ public class Server implements HttpHandler {
 		o.reset();
 		for (int i = 0; i < smokations.size(); i++) {
 			// write arraylist object by object
-			o.writeObject(smokations.get(i));
+			o.writeDouble(smokations.get(i).getLatitude());
+			o.reset();
+			o.writeDouble(smokations.get(i).getLongitude());
 			o.reset();
 		}
 		o.close();
