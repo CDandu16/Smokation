@@ -37,8 +37,9 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
-import com.example.SmokationModel.Smokation;
 
+
+import Utils.Smokation;
 import im.delight.android.location.SimpleLocation;
 
 public class MainActivity extends AppCompatActivity implements
@@ -101,39 +102,62 @@ public class MainActivity extends AppCompatActivity implements
         String result;
         //Instantiate new instance of our class
         GetSmokationsRequest getRequest = new GetSmokationsRequest();
+        final AddSmokationRequest  addRequest = new AddSmokationRequest();
         //Perform the doInBackground method, passing in our url
-        try {
-            result = getRequest.execute(myUrl).get();
-            Log.d("hello",result);
-        } catch (InterruptedException e) {
 
-        } catch (ExecutionException e){
-
-        }
-        //gps from Simple_Location Jar
-        location = new SimpleLocation(this);
+        location = new SimpleLocation(this,true);
         if (!location.hasLocationEnabled()) {
             // ask the user to enable location access
             SimpleLocation.openSettings(this);
         }
 
+        try {
+            result = getRequest.execute(myUrl).get();
+            Log.d("hello", result);
+        } catch (InterruptedException e) {
+
+        } catch (ExecutionException e) {
+
+        }
+        //gps from Simple_Location Jar
+
         //Parse initialization
-        Parse.enableLocalDatastore(this);
-        Parse.initialize(this, APIKeys.Application_ID, APIKeys.Client_Key);
-        smokerLocation = new ParseObject("smokerLocation");
+//        Parse.enableLocalDatastore(this);
+//        Parse.initialize(this, APIKeys.Application_ID, APIKeys.Client_Key);
+//        smokerLocation = new ParseObject("smokerLocation");
 
         Button test = (Button) findViewById(R.id.button1);
         test.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                smokerLocation.put("latitude", location.getLatitude());
-                smokerLocation.put("longitude", location.getLongitude());
-                smokerLocation.saveInBackground();
+//                smokerLocation.put("latitude", location.getLatitude());
+//                smokerLocation.put("longitude", location.getLongitude());
+//                smokerLocation.saveInBackground();
                 //says if user submits position of course we should change it to when it actually uploads
+                /*String result;
+                String lat = Double.toString(location.getLatitude());
+                String longi = Double.toString(location.getLongitude());
+                String response = "location not submitted";
+                try {
+                    URL url = new URL("http://45.55.156.205:8000");
+                    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                    connection.setRequestProperty("RequestType", "addSmokation");
+                    connection.addRequestProperty("Latitude", lat);
+                    connection.addRequestProperty("Longitude", longi);
+                    connection.connect();
+                    ObjectInputStream input = new ObjectInputStream(connection.getInputStream());
+                    response = input.readUTF();
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                Log.d("hello",response);
                 Toast.makeText(getApplicationContext(), "Spot Submitted", Toast.LENGTH_LONG).show();
                 //output position to console
                 Log.i("hello", "lat" + location.getLatitude() + "long" + location.getLongitude());
-                //Starts listening service
+                //Starts listening service*/
+                Log.i("hello", "lat" + location.getLatitude() + "long" + location.getLongitude());
             }
         });
         mAddGeofencesButton = (Button) findViewById(R.id.add_geofences_button);
@@ -288,7 +312,7 @@ public class MainActivity extends AppCompatActivity implements
     /**
      * Runs when the result of calling addGeofences() and removeGeofences() becomes available.
      * Either method can complete successfully or with an error.
-     *
+     * <p/>
      * Since this activity implements the {@link ResultCallback} interface, we are required to
      * define this method.
      *
@@ -377,44 +401,71 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
-   public class GetSmokationsRequest extends AsyncTask<String, Void, String> {
+    public class GetSmokationsRequest extends AsyncTask<String, Void, String> {
 
         @Override
-        protected String doInBackground(String ... params) {
+        protected String doInBackground(String... params) {
             String stringUrl = params[0];
             String result;
-            ArrayList<Smokation> smokers = new ArrayList<Smokation>();
+            ArrayList<Smokation> smokations = new ArrayList<Smokation>();
             try {
-                URL url = new URL("http://45.55.156.205:8000");
-                HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+                URL url = new URL(stringUrl);
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                 connection.setRequestProperty("RequestType", "getSmokations");
                 connection.connect();
                 ObjectInputStream input = new ObjectInputStream(connection.getInputStream());
                 Smokation smoke;
                 Object o;
                 int counter = input.readInt();
-                Log.d("hello","" + counter);
-                for(int i=0;i<counter;i++){
+                Log.d("hello", "dddd" + counter);
+                for (int i = 0; i < counter; i++) {
                     Log.d("hello", "" + i);
-                    o = input.readObject();
-                    Log.d("hello","" + o.toString());
-                    smokers.add((Smokation)o);
+                    smoke = new Smokation(input.readDouble(), input.readDouble());
+                    smokations.add(smoke);
                 }
-            }catch(MalformedURLException e){
+            } catch (MalformedURLException e) {
                 e.printStackTrace();
-            }catch(IOException e){
-                e.printStackTrace();
-            }catch(ClassNotFoundException e){
+            } catch (IOException e) {
                 e.printStackTrace();
             }
-            //prints out smoker locations
-            Log.d("hello",smokers.toString());
-            return smokers.toString();
+            //prints out smoker location
+            return smokations.toString();
         }
 
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
         }
+    }
+
+    public class AddSmokationRequest extends AsyncTask<String, Void, String>{
+
+        @Override
+        protected String doInBackground(String... params) {
+            String lat = params[0];
+            String longi = params[1];
+            String response = "location not submitted";
+            try {
+                URL url = new URL("http://45.55.156.205:8000");
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.setRequestProperty("RequestType", "addSmokation");
+                connection.addRequestProperty("Latitude", lat);
+                connection.addRequestProperty("Longitude", longi);
+                connection.connect();
+                ObjectInputStream input = new ObjectInputStream(connection.getInputStream());
+                response = input.readUTF();
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return response;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+        }
+
     }
 }
