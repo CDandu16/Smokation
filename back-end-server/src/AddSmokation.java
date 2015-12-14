@@ -11,8 +11,8 @@ public class AddSmokation {
 			URL url = new URL("http://45.55.156.205:8000");
 			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 			connection.setRequestProperty("RequestType", "addSmokation");
-			connection.addRequestProperty("Latitude", "600");
-			connection.addRequestProperty("Longitude", "500");
+			connection.addRequestProperty("Latitude", "20");
+			connection.addRequestProperty("Longitude", "30");
 			connection.connect();
 			ObjectInputStream input = new ObjectInputStream(connection.getInputStream());
 			System.out.println(input.readUTF());

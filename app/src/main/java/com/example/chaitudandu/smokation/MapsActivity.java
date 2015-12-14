@@ -1,5 +1,6 @@
 package com.example.chaitudandu.smokation;
 
+import android.os.AsyncTask;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -17,7 +18,16 @@ import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+
+import Utils.Smokation;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -29,38 +39,30 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
         mMap = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
+        String myUrl = "http://45.55.156.205:8000";
+        GetSmokationsRequest getRequest = new GetSmokationsRequest();
+        ArrayList<Smokation> smokerLocations = new ArrayList<Smokation>();
+        try {
+            smokerLocations = getRequest.execute(myUrl).get();
+        } catch (InterruptedException e) {
 
-        //Retrieve lat long from Parse
+        } catch (ExecutionException e) {
 
-        ParseQuery<ParseObject> latLongquery = new ParseQuery<ParseObject>("smokerLocation");
-        latLongquery.findInBackground(new FindCallback<ParseObject>() {
-            @Override
-            public void done(List<ParseObject> objects, ParseException e) {
-                if (e == null) {
-                    Log.i("score", "Retrieved " + objects.size() + " scores");
-                    smokerLocations = objects;
-                    //goes through the list of parse objects containing lat and long
-                    for(int i=0;i<smokerLocations.size();i++){
-                        //draws spots to map
-                        LatLng marker = new LatLng(smokerLocations.get(i).getDouble("latitude"),smokerLocations.get(i).getDouble("longitude"));
-                        mMap.addMarker(new MarkerOptions().position(marker).title("Marker in Sydney"));
-                    }
-                } else {
-                    Log.i("score", "Error: " + e.getMessage());
-                    Toast.makeText(MapsActivity.this, "Error retrieving", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
+        }
 
-        Log.i("score","works here");
-
-
+        //goes through the list of parse objects containing lat and long
+        for (int i = 0; i < smokerLocations.size(); i++) {
+            //draws spots to map
+            LatLng marker = new LatLng(smokerLocations.get(i).getLatitude(), smokerLocations.get(i).getLongitude());
+            mMap.addMarker(new MarkerOptions().position(marker).title("Smoking Marker"));
+        }
 
         // Add a marker in Sydney and move the camera
 
     }
 
 /////////Don't write anyting in there write everything in OnCreate
+
     /**
      * Manipulates the map once available.
      * This callback is triggered when the map is ready to be used.
@@ -72,6 +74,39 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      */
     @Override
     public void onMapReady(GoogleMap googleMap) {
+
+    }
+
+    public class GetSmokationsRequest extends AsyncTask<String, Void, ArrayList<Smokation>> {
+
+        @Override
+        protected ArrayList<Smokation> doInBackground(String... params) {
+            String stringUrl = params[0];
+            String result;
+            ArrayList<Smokation> smokations = new ArrayList<Smokation>();
+            try {
+                URL url = new URL(stringUrl);
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.setRequestProperty("RequestType", "getSmokations");
+                connection.connect();
+                ObjectInputStream input = new ObjectInputStream(connection.getInputStream());
+                Smokation smoke;
+                Object o;
+                int counter = input.readInt();
+                Log.d("hello", "dddd" + counter);
+                for (int i = 0; i < counter; i++) {
+                    Log.d("hello", "" + i);
+                    smoke = new Smokation(input.readDouble(), input.readDouble());
+                    smokations.add(smoke);
+                }
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            //prints out smoker location
+            return smokations;
+        }
 
     }
 }

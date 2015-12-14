@@ -35,10 +35,14 @@ public class Constants {
      */
     public static final HashMap<String, LatLng> BAY_AREA_LANDMARKS = new HashMap<String, LatLng>();
     static {
+
+
         // house
         BAY_AREA_LANDMARKS.put("SFO", new LatLng(42.575452, -83.1394288));
 
         // Googleplex.
         BAY_AREA_LANDMARKS.put("GOOGLE", new LatLng(37.422611,-122.0840577));
     }
+
+
 }

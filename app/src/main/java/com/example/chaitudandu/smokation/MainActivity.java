@@ -1,6 +1,7 @@
 package com.example.chaitudandu.smokation;
 
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -45,7 +46,7 @@ import im.delight.android.location.SimpleLocation;
 public class MainActivity extends AppCompatActivity implements
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, ResultCallback<Status> {
 
-    public ParseObject smokerLocation;
+
     public SimpleLocation location;
     protected static final String TAG = "MainActivity";
 
@@ -99,67 +100,27 @@ public class MainActivity extends AppCompatActivity implements
         //Some url endpoint that you may have
         String myUrl = "http://45.55.156.205:8000";
         //String to place our result in
-        String result;
+        ArrayList<Smokation> result = new ArrayList<>();
         //Instantiate new instance of our class
         GetSmokationsRequest getRequest = new GetSmokationsRequest();
-        final AddSmokationRequest  addRequest = new AddSmokationRequest();
         //Perform the doInBackground method, passing in our url
 
-        location = new SimpleLocation(this,true);
+        location = new SimpleLocation(this);
         if (!location.hasLocationEnabled()) {
             // ask the user to enable location access
             SimpleLocation.openSettings(this);
         }
 
+        Log.d("hello",location.getLatitude() + "" + location.getLongitude());
+
         try {
             result = getRequest.execute(myUrl).get();
-            Log.d("hello", result);
+            Log.d("hello", result.toString());
         } catch (InterruptedException e) {
 
         } catch (ExecutionException e) {
 
         }
-        //gps from Simple_Location Jar
-
-        //Parse initialization
-//        Parse.enableLocalDatastore(this);
-//        Parse.initialize(this, APIKeys.Application_ID, APIKeys.Client_Key);
-//        smokerLocation = new ParseObject("smokerLocation");
-
-        Button test = (Button) findViewById(R.id.button1);
-        test.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-//                smokerLocation.put("latitude", location.getLatitude());
-//                smokerLocation.put("longitude", location.getLongitude());
-//                smokerLocation.saveInBackground();
-                //says if user submits position of course we should change it to when it actually uploads
-                /*String result;
-                String lat = Double.toString(location.getLatitude());
-                String longi = Double.toString(location.getLongitude());
-                String response = "location not submitted";
-                try {
-                    URL url = new URL("http://45.55.156.205:8000");
-                    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                    connection.setRequestProperty("RequestType", "addSmokation");
-                    connection.addRequestProperty("Latitude", lat);
-                    connection.addRequestProperty("Longitude", longi);
-                    connection.connect();
-                    ObjectInputStream input = new ObjectInputStream(connection.getInputStream());
-                    response = input.readUTF();
-                } catch (MalformedURLException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                Log.d("hello",response);
-                Toast.makeText(getApplicationContext(), "Spot Submitted", Toast.LENGTH_LONG).show();
-                //output position to console
-                Log.i("hello", "lat" + location.getLatitude() + "long" + location.getLongitude());
-                //Starts listening service*/
-                Log.i("hello", "lat" + location.getLatitude() + "long" + location.getLongitude());
-            }
-        });
         mAddGeofencesButton = (Button) findViewById(R.id.add_geofences_button);
         mRemoveGeofencesButton = (Button) findViewById(R.id.remove_geofences_button);
         mGeofenceList = new ArrayList<Geofence>();
@@ -169,11 +130,33 @@ public class MainActivity extends AppCompatActivity implements
 
         // Get the value of mGeofencesAdded from SharedPreferences. Set to false as a default.
         mGeofencesAdded = mSharedPreferences.getBoolean(Constants.GEOFENCES_ADDED_KEY, false);
-        populateGeofenceList();
+        populateGeofenceList(result);
 
         // Kick off the request to build GoogleApiClient.
         buildGoogleApiClient();
 
+    }
+
+
+    public void create(View v) {
+        switch (v.getId()) {
+            case R.id.addSmokation:
+                try {
+                    SimpleLocation slocation = new SimpleLocation(this,true);
+                    if (!slocation.hasLocationEnabled()) {
+                        // ask the user to enable location access
+                        SimpleLocation.openSettings(this);
+                    }
+                    String result =  new AddSmokationRequest(this).execute(Double.toString(slocation.getLatitude()),Double.toString(slocation.getLongitude())).get();
+                    Toast.makeText(MainActivity.this, result, Toast.LENGTH_SHORT).show();
+                    Log.d("hello",slocation.getLatitude() + "" + slocation.getLongitude());
+                } catch (InterruptedException e) {
+
+                } catch (ExecutionException e) {
+
+                }
+                break;
+        }
     }
 
     @Override
@@ -357,18 +340,18 @@ public class MainActivity extends AppCompatActivity implements
      * This sample hard codes geofence data. A real app might dynamically create geofences based on
      * the user's location.
      */
-    public void populateGeofenceList() {
-        for (Map.Entry<String, LatLng> entry : Constants.BAY_AREA_LANDMARKS.entrySet()) {
+    public void populateGeofenceList(ArrayList<Smokation> smokers) {
+        for (int i = 0;i<smokers.size();i++) {
 
             mGeofenceList.add(new Geofence.Builder()
                     // Set the request ID of the geofence. This is a string to identify this
                     // geofence.
-                    .setRequestId(entry.getKey())
+                    .setRequestId("Smoker Location")
 
                     // Set the circular region of this geofence.
                     .setCircularRegion(
-                            entry.getValue().latitude,
-                            entry.getValue().longitude,
+                            smokers.get(i).getLatitude(),
+                            smokers.get(i).getLatitude(),
                             Constants.GEOFENCE_RADIUS_IN_METERS
                     )
 
@@ -401,10 +384,10 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
-    public class GetSmokationsRequest extends AsyncTask<String, Void, String> {
+    private class GetSmokationsRequest extends AsyncTask<String, Void, ArrayList<Smokation>> {
 
         @Override
-        protected String doInBackground(String... params) {
+        protected ArrayList<Smokation> doInBackground(String... params) {
             String stringUrl = params[0];
             String result;
             ArrayList<Smokation> smokations = new ArrayList<Smokation>();
@@ -429,16 +412,17 @@ public class MainActivity extends AppCompatActivity implements
                 e.printStackTrace();
             }
             //prints out smoker location
-            return smokations.toString();
+            return smokations;
         }
 
-        @Override
-        protected void onPostExecute(String result) {
-            super.onPostExecute(result);
-        }
     }
 
-    public class AddSmokationRequest extends AsyncTask<String, Void, String>{
+   private class AddSmokationRequest extends AsyncTask<String, Void, String>{
+
+        Context context;
+        public AddSmokationRequest(Context context){
+            this.context = context;
+        }
 
         @Override
         protected String doInBackground(String... params) {
