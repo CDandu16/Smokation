@@ -19,8 +19,8 @@ import java.util.ArrayList
 
 class GeofenceTransitionsIntentService : IntentService(GeofenceTransitionsIntentService.TAG) {
 
-    @Override
-    fun onCreate() {
+
+    override fun onCreate() {
         super.onCreate()
     }
 
@@ -29,11 +29,11 @@ class GeofenceTransitionsIntentService : IntentService(GeofenceTransitionsIntent
      * @param intent sent by Location Services. This Intent is provided to Location
      * *               Services (inside a PendingIntent) when addGeofences() is called.
      */
-    @Override
-    protected fun onHandleIntent(intent: Intent) {
+    override protected fun onHandleIntent(intent: Intent) {
         val geofencingEvent = GeofencingEvent.fromIntent(intent)
         if (geofencingEvent.hasError()) {
-            val errorMessage = GeofenceErrorMessages.getErrorString(this,
+            val geoError = GeofenceErrorMessages()
+            val errorMessage = geoError.getErrorString(this,
                     geofencingEvent.getErrorCode())
             Log.e(TAG, errorMessage)
             return
@@ -82,9 +82,10 @@ class GeofenceTransitionsIntentService : IntentService(GeofenceTransitionsIntent
         val geofenceTransitionString = getTransitionString(geofenceTransition)
 
         // Get the Ids of each geofence that was triggered.
-        val triggeringGeofencesIdsList = ArrayList()
+        val triggeringGeofencesIdsList: ArrayList<String> = ArrayList()
         for (geofence in triggeringGeofences) {
-            triggeringGeofencesIdsList.add(geofence.getRequestId())
+            val hello:Geofence = geofence
+            triggeringGeofencesIdsList.add(hello.requestId)
         }
         val triggeringGeofencesIdsString = TextUtils.join(", ", triggeringGeofencesIdsList)
 
@@ -115,9 +116,7 @@ class GeofenceTransitionsIntentService : IntentService(GeofenceTransitionsIntent
         val builder = NotificationCompat.Builder(this)
 
         // Define the notification settings.
-        builder.setSmallIcon(R.mipmap.ic_launcher).setLargeIcon// In a real app, you may want to use a library like Volley
-        // to decode the Bitmap.
-        (BitmapFactory.decodeResource(getResources(),
+        builder.setSmallIcon(R.mipmap.ic_launcher).setLargeIcon(BitmapFactory.decodeResource(getResources(),
                 R.mipmap.ic_launcher)).setColor(Color.RED).setContentTitle(notificationDetails).setContentText(getString(R.string.geofence_transition_notification_text)).setContentIntent(notificationPendingIntent)
 
         // Dismiss notification once the user touches it.

@@ -34,12 +34,6 @@ object Constants {
 
     init {
 
-
-        // house
-        BAY_AREA_LANDMARKS.put("SFO", LatLng(42.575452, -83.1394288))
-
-        // Googleplex.
-        BAY_AREA_LANDMARKS.put("GOOGLE", LatLng(37.422611, -122.0840577))
     }
 
 

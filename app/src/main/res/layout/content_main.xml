@@ -18,38 +18,42 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:text="Test"
+        android:text="Add Smoking Location"
         android:onClick="create"
-        android:layout_below="@+id/remove_geofences_button"
-        android:layout_alignParentEnd="true"
-        android:layout_marginTop="89dp" />
+        android:layout_marginBottom="98dp"
+        android:layout_above="@+id/button"
+        android:layout_alignParentStart="true" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Open Map"
         android:onClick="openMap"
-        android:layout_below="@+id/addSmokation"
+        android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"
-        android:layout_alignEnd="@+id/addSmokation"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_marginBottom="137dp"
+        android:id="@+id/button"
+        android:layout_alignEnd="@+id/addSmokation" />
         android:onClick="openMap" />
 
     <Button
         android:id="@+id/add_geofences_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
+
         android:onClick="addGeofencesButtonHandler"
         android:text="@string/add_geofences"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="49dp" />
 
     <Button
         android:id="@+id/remove_geofences_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
+
         android:onClick="removeGeofencesButtonHandler"
-        android:text="@string/remove_geofences" />
+        android:text="@string/remove_geofences"
+        android:layout_alignTop="@+id/add_geofences_button"
+        android:layout_alignEnd="@+id/addSmokation" />
 </RelativeLayout>

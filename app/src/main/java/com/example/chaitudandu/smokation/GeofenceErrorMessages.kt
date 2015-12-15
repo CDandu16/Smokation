@@ -8,11 +8,10 @@ import com.google.android.gms.location.GeofenceStatusCodes
 /**
  * Created by Chaitu Dandu on 11/29/2015.
  */
-object GeofenceErrorMessages {
+class GeofenceErrorMessages {
 
-    /**
-     * Returns the error string for a geofencing error code.
-     */
+
+
     fun getErrorString(context: Context, errorCode: Int): String {
         val mResources = context.getResources()
         when (errorCode) {
