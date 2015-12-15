@@ -12,7 +12,7 @@ View a live map of smoking locations so you can avoid those "self-indulgent, sel
 
 Download Link
 
-https://www.mediafire.com/?xfwb56by30s3e55
+http://www.mediafire.com/download/g20uo7ddf8ao949/app-debug%282%29.apk
 
 ##Server and Android app written in the Kotlin programming language
 
