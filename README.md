@@ -12,3 +12,6 @@ View a live map of smoking locations so you can avoid those "self-indulgent, sel
 
 
 ##Server and Android app written in the Kotlin programming language
+
+![Jian Yang - Inspiration]
+(https://i.ytimg.com/vi/k_fRQe_FgMs/maxresdefault.jpg)
