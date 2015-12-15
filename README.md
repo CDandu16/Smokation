@@ -12,7 +12,7 @@ View a live map of smoking locations so you can avoid those "self-indulgent, sel
 
 Download Link
 
-https://mega.nz/#!PUcikSoY
+https://github.com/CDandu16/Smokation/blob/master/Pictures/app-debug.apk
 
 ##Server and Android app written in the Kotlin programming language
 
