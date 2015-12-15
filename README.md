@@ -10,6 +10,9 @@ View a live map of smoking locations so you can avoid those "self-indulgent, sel
 * View live map of Smokations
 * Get notified when entering a Smokation through GeoFences
 
+Download Link
+
+https://mega.nz/#!PUcikSoY
 
 ##Server and Android app written in the Kotlin programming language
 
