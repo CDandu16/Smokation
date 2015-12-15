@@ -6,5 +6,5 @@
 .DS_Store
 /build
 /captures
-/AddSmokation.java
-/GetSmokations.java
+/back-end-server/src//AddSmokation.java
+/back-end-server/src/GetSmokations.java
